@@ -104,6 +104,12 @@ class ApiService {
     return response.data;
   }
 
+  // Delete investor endpoint
+  async deleteInvestor(investorId: string) {
+    const response = await this.api.delete(`/investor/admin/delete/${investorId}`);
+    return response.data;
+  }
+
   // References endpoints
   async getAllReferences() {
     const response = await this.api.get('/references');

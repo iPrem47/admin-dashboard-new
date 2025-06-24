@@ -49,12 +49,7 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    
-    // Filter by investor or account name
-    const filteredTransactions = transactions.filter(
-      t => t.investorName?.toLowerCase().includes(value.toLowerCase()) || 
-           t.accountName?.toLowerCase().includes(value.toLowerCase())
-    );
+    setFilters({ search: value });
   };
 
   const handleAccountChange = (account: string) => {
@@ -80,7 +75,8 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
     setFilters({
       account: undefined,
       transactionMode: undefined,
-      status: undefined
+      status: undefined,
+      search: undefined
     });
   };
 
@@ -132,14 +128,6 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
   };
 
   const hasActiveFilters = selectedAccount !== 'All' || selectedTransactionMode !== 'All' || searchTerm;
-
-  // Filter transactions based on search term
-  const filteredTransactions = searchTerm 
-    ? transactions.filter(t => 
-        t.investorName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        t.accountName?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : transactions;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
@@ -267,7 +255,7 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
 
           {/* Stats */}
           <div className="text-sm text-gray-600">
-            Total Transactions: <span className="font-semibold text-gray-900">{filteredTransactions.length}</span>
+            Total Transactions: <span className="font-semibold text-gray-900">{transactions.length}</span>
           </div>
         </div>
       </div>
@@ -302,7 +290,7 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
       {/* Table */}
       {!loading && !error && (
         <div className="overflow-x-auto">
-          {filteredTransactions.length === 0 ? (
+          {transactions.length === 0 ? (
             <div className="p-12 text-center">
               <div className="text-gray-400 mb-4">
                 <Filter size={48} className="mx-auto" />
@@ -340,10 +328,13 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Date
                   </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
-                {filteredTransactions.map((transaction, index) => (
+                {transactions.map((transaction, index) => (
                   <tr key={transaction._id} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
                     <td className="px-8 py-4 whitespace-nowrap">
                       {transaction.investorName ? (
@@ -411,6 +402,15 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm text-gray-900">{formatDate(transaction.createdAt)}</span>
                     </td>
+                    
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -420,11 +420,11 @@ const BulkTransactionDetailsTable: React.FC<BulkTransactionDetailsTableProps> = 
       )}
 
       {/* Footer with Pagination if needed */}
-      {!loading && !error && filteredTransactions.length > 0 && (
+      {!loading && !error && transactions.length > 0 && (
         <div className="bg-gray-50 px-8 py-4 border-t border-gray-200">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              Showing <span className="font-semibold text-gray-900">{filteredTransactions.length}</span> transactions
+              Showing <span className="font-semibold text-gray-900">{transactions.length}</span> transactions
             </div>
             
             <div className="flex items-center space-x-2">

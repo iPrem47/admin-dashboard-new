@@ -41,6 +41,7 @@ export interface BulkTransactionFilters {
   account?: string;
   status?: string;
   transactionMode?: string;
+  search?: string;
 }
 
 export interface BulkTransactionPagination {

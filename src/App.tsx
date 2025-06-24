@@ -8,9 +8,6 @@ import UsersTable from './components/UsersTable';
 import ProfitLoss from './components/ProfitLoss';
 import ViewInvestors from './components/Investors/ViewInvestors';
 import AddInvestor from './components/Investors/AddInvestor/AddInvestor';
-import PendingInvestors from './components/Investors/PendingInvestors/PendingInvestors';
-import InvestorDetails from './components/Investors/InvestorDetails/InvestorDetails';
-import Referrals from './components/Investors/Referrals/Referrals';
 import Dashboard from './components/Dashboard/Dashboard';
 import Payouts from './components/Payouts/Payouts';
 import BulkTransactions from './components/BulkTransactions/BulkTransactions';
@@ -18,10 +15,6 @@ import BulkTransactionDetails from './components/BulkTransactions/BulkTransactio
 import Transactions from './components/Transactions/Transactions';
 import PendingTransactions from './components/PendingTransactions/PendingTransactions';
 import AddFunds from './components/AddFunds/AddFunds';
-import WithdrawFunds from './components/WithdrawFunds/WithdrawFunds';
-import AddTransaction from './components/AddTransaction/AddTransaction';
-import AllAccounts from './components/AllAccounts/AllAccounts';
-import TallyExport from './components/TallyExport/TallyExport';
 
 const DashboardLayout: React.FC = () => {
   return (
@@ -44,9 +37,12 @@ const DashboardLayout: React.FC = () => {
               {/* Investor Routes */}
               <Route path="/investors" element={<ViewInvestors />} />
               <Route path="/investors/add" element={<AddInvestor onBack={() => window.history.back()} />} />
-              <Route path="/investors/pending" element={<PendingInvestors />} />
-              <Route path="/investors/:investorId" element={<InvestorDetails />} />
-              <Route path="/investors/referrals" element={<Referrals />} />
+              <Route path="/investors/reports" element={
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Investor Reports</h2>
+                  <p className="text-gray-600">This section is under development.</p>
+                </div>
+              } />
               
               {/* Transaction Routes */}
               <Route path="/profit-loss" element={<ProfitLoss />} />
@@ -55,12 +51,21 @@ const DashboardLayout: React.FC = () => {
               <Route path="/bulk-transactions/:bulkTransactionId" element={<BulkTransactionDetails />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/pending-transactions" element={<PendingTransactions />} />
-              <Route path="/add-transaction" element={<AddTransaction />} />
+              <Route path="/add-transaction" element={
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Add Transaction</h2>
+                  <p className="text-gray-600">This section is under development.</p>
+                </div>
+              } />
               <Route path="/add-funds" element={<AddFunds />} />
-              <Route path="/withdraw-funds" element={<WithdrawFunds />} />
+              <Route path="/withdraw-funds" element={
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">List Withdraw Funds</h2>
+                  <p className="text-gray-600">This section is under development.</p>
+                </div>
+              } />
               
               {/* Account Routes */}
-              <Route path="/all-accounts" element={<AllAccounts />} />
               <Route path="/account-settings" element={
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Account Settings</h2>
@@ -81,7 +86,12 @@ const DashboardLayout: React.FC = () => {
               } />
               
               {/* Tally Export Route */}
-              <Route path="/tally-export" element={<TallyExport />} />
+              <Route path="/tally-export" element={
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Tally Export</h2>
+                  <p className="text-gray-600">This section is under development.</p>
+                </div>
+              } />
               
               {/* Catch all route - redirect to dashboard */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

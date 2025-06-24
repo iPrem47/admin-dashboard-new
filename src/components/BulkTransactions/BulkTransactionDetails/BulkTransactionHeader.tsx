@@ -24,40 +24,6 @@ const BulkTransactionHeader: React.FC<BulkTransactionHeaderProps> = ({
     navigate('/bulk-transactions');
   };
 
-  const formatDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'Completed':
-        return <CheckCircle size={20} className="text-green-600" />;
-      case 'Pending':
-        return <Clock size={20} className="text-yellow-600" />;
-      case 'Failed':
-        return <XCircle size={20} className="text-red-600" />;
-      default:
-        return <AlertCircle size={20} className="text-gray-600" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Completed':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'Pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Failed':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between">

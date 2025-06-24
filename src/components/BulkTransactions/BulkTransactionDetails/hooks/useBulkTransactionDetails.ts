@@ -22,6 +22,7 @@ interface UseBulkTransactionDetailsReturn {
 
 export const useBulkTransactionDetails = (bulkTransactionId: string): UseBulkTransactionDetailsReturn => {
   const [transactions, setTransactions] = useState<BulkTransactionDetail[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<BulkTransactionDetail[]>([]);
   const [summary, setSummary] = useState<BulkTransactionSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,40 +133,56 @@ export const useBulkTransactionDetails = (bulkTransactionId: string): UseBulkTra
         });
       }
       
-      // Apply filters if any
-      let filteredTransactions = [...mockTransactions];
-      
-      if (filters.account) {
-        filteredTransactions = filteredTransactions.filter(
-          transaction => transaction.accountName?.toLowerCase().includes(filters.account!.toLowerCase())
-        );
-      }
-      
-      if (filters.transactionMode) {
-        filteredTransactions = filteredTransactions.filter(
-          transaction => transaction.transactionMode === filters.transactionMode
-        );
-      }
-      
-      if (filters.status) {
-        filteredTransactions = filteredTransactions.filter(
-          transaction => transaction.bulkTransactionStatus === filters.status
-        );
-      }
-      
-      setTransactions(filteredTransactions);
+      setTransactions(mockTransactions);
       setPagination({
         currentPage: 1,
         totalPages: 1,
-        totalResults: filteredTransactions.length,
-        limit: filteredTransactions.length,
+        totalResults: mockTransactions.length,
+        limit: mockTransactions.length,
         hasNext: false,
         hasPrev: false
       });
     } finally {
       setLoading(false);
     }
-  }, [bulkTransactionId, filters]);
+  }, [bulkTransactionId]);
+
+  // Apply filters whenever transactions or filters change
+  useEffect(() => {
+    let filtered = [...transactions];
+    
+    if (filters.account) {
+      filtered = filtered.filter(
+        transaction => transaction.accountName?.toLowerCase().includes(filters.account!.toLowerCase())
+      );
+    }
+    
+    if (filters.transactionMode) {
+      filtered = filtered.filter(
+        transaction => transaction.transactionMode === filters.transactionMode
+      );
+    }
+    
+    if (filters.status) {
+      filtered = filtered.filter(
+        transaction => transaction.bulkTransactionStatus === filters.status
+      );
+    }
+
+    if (filters.search) {
+      filtered = filtered.filter(
+        transaction => 
+          transaction.investorName?.toLowerCase().includes(filters.search!.toLowerCase()) || 
+          transaction.accountName?.toLowerCase().includes(filters.search!.toLowerCase())
+      );
+    }
+    
+    setFilteredTransactions(filtered);
+    setPagination(prev => ({
+      ...prev,
+      totalResults: filtered.length
+    }));
+  }, [transactions, filters]);
 
   const setFilters = (newFilters: Partial<BulkTransactionFilters>) => {
     console.log('Setting new filters:', newFilters);
@@ -184,7 +201,7 @@ export const useBulkTransactionDetails = (bulkTransactionId: string): UseBulkTra
   }, [fetchBulkTransactionDetails, bulkTransactionId]);
 
   return {
-    transactions,
+    transactions: filteredTransactions,
     summary,
     loading,
     error,

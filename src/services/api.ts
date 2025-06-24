@@ -191,6 +191,28 @@ class ApiService {
     return response.data;
   }
 
+  // Withdraw Funds endpoints
+  async getWithdrawFundsRequests(params: { page: number; limit: number; search?: string; transactionStatusId?: number | null }) {
+    const queryParams = new URLSearchParams({
+      transactionTypeId: '2', // Always 2 for Withdraw Funds
+      page: params.page.toString(),
+      limit: params.limit.toString()
+    });
+
+    if (params.search) {
+      queryParams.append('search', params.search);
+    }
+
+    if (params.transactionStatusId !== undefined && params.transactionStatusId !== null) {
+      queryParams.append('transactionStatusId', params.transactionStatusId.toString());
+    }
+
+    console.log('Fetching withdraw funds with URL:', `/transaction/admin/getAddWithdrawRequest?${queryParams.toString()}`);
+    
+    const response = await this.api.get(`/transaction/admin/getAddWithdrawRequest?${queryParams.toString()}`);
+    return response.data;
+  }
+
   // Payment System endpoints
   async getAllPaymentSystems() {
     const response = await this.api.get('/investor/getAllPaymentSystem');

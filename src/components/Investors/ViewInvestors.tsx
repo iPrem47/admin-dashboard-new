@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Loader2, AlertCircle, TrendingUp } from 'lucide-react';
 import { useInvestors } from './hooks/useInvestors';
 import { Investor } from './types';
@@ -7,6 +8,7 @@ import InvestorTableRow from './InvestorTableRow';
 import InvestorTablePagination from './InvestorTablePagination';
 
 const ViewInvestors: React.FC = () => {
+  const navigate = useNavigate();
   const { investors, loading, error, pagination, filters, setFilters, refetch } = useInvestors();
   const [searchTerm, setSearchTerm] = useState('');
   const [paymentTypeFilter, setPaymentTypeFilter] = useState('All');
@@ -88,7 +90,7 @@ const ViewInvestors: React.FC = () => {
   // Investor action handlers
   const handleViewInvestor = (investor: Investor) => {
     console.log('View investor:', investor);
-    // Implement view investor modal/page
+    navigate(`/investors/${investor.id}`);
   };
 
   const handleEditInvestor = (investor: Investor) => {

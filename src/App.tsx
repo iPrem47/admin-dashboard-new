@@ -15,6 +15,7 @@ import Transactions from './components/Transactions/Transactions';
 import PendingTransactions from './components/PendingTransactions/PendingTransactions';
 import AddFunds from './components/AddFunds/AddFunds';
 import WithdrawFunds from './components/WithdrawFunds/WithdrawFunds';
+import AddTransaction from './components/AddTransaction/AddTransaction';
 
 const DashboardLayout: React.FC = () => {
   return (
@@ -50,12 +51,7 @@ const DashboardLayout: React.FC = () => {
               <Route path="/bulk-transactions" element={<BulkTransactions />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/pending-transactions" element={<PendingTransactions />} />
-              <Route path="/add-transaction" element={
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Add Transaction</h2>
-                  <p className="text-gray-600">This section is under development.</p>
-                </div>
-              } />
+              <Route path="/add-transaction" element={<AddTransaction />} />
               <Route path="/add-funds" element={<AddFunds />} />
               <Route path="/withdraw-funds" element={<WithdrawFunds />} />
               

@@ -128,6 +128,12 @@ class ApiService {
     return response.data;
   }
 
+  // Add Transaction endpoint
+  async addTransaction(payload: { tag: string; investorId: string; amount: number; date: string; note: string }) {
+    const response = await this.api.post('/transaction/addTransaction', payload);
+    return response.data;
+  }
+
   // Pending Transactions endpoints
   async getPendingTransactions(params: { 
     page: number; 

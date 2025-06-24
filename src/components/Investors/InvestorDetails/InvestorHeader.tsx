@@ -1,54 +1,35 @@
 import React from 'react';
-import { ArrowLeft, RefreshCw, Download, Edit, Trash2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Download, Edit, Trash2, AlertCircle, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { InvestorProfile } from './types';
+import { useExportInvestor } from './hooks/useExportInvestor';
 
 interface InvestorHeaderProps {
   profile: InvestorProfile | null;
   loading: boolean;
   error: string | null;
   onRefresh: () => void;
+  onAddFunds: () => void;
+  onWithdraw: () => void;
+  onStatement: () => void;
+  onExport: () => void;
 }
 
-const InvestorHeader: React.FC<InvestorHeaderProps> = ({ profile, loading, error, onRefresh }) => {
+const InvestorHeader: React.FC<InvestorHeaderProps> = ({ 
+  profile, 
+  loading, 
+  error, 
+  onRefresh,
+  onAddFunds,
+  onWithdraw,
+  onStatement,
+  onExport
+}) => {
   const navigate = useNavigate();
+  const { exporting } = useExportInvestor();
 
   const handleBack = () => {
     navigate('/investors');
-  };
-
-  const handleExport = () => {
-    if (!profile) return;
-    
-    // Create CSV data
-    const csvData = {
-      'Name': profile.name,
-      'Username': profile.userName,
-      'Email': profile.email,
-      'Payment System': profile.paymentSystemName,
-      'Amount': profile.amount,
-      'PAN Card': profile.panCardNumber,
-      'Aadhar Card': profile.aadharCardNumber,
-      'Bank Name': profile.bankName,
-      'Bank Account': profile.bankAccountNumber,
-      'IFSC Code': profile.ifscCode,
-      'Address': `${profile.address1}, ${profile.address2}, ${profile.district}, ${profile.state}, ${profile.pinCode}, ${profile.country}`
-    };
-    
-    // Convert to CSV string
-    const csvString = [
-      Object.keys(csvData).join(','),
-      Object.values(csvData).join(',')
-    ].join('\n');
-    
-    // Download CSV
-    const blob = new Blob([csvString], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `investor-${profile.userName}-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -80,21 +61,42 @@ const InvestorHeader: React.FC<InvestorHeaderProps> = ({ profile, loading, error
         </div>
         <div className="flex items-center space-x-3">
           <button 
-            onClick={onRefresh}
-            disabled={loading}
-            className={`flex items-center space-x-2 px-4 py-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
+            onClick={onAddFunds}
+            disabled={loading || !profile}
+            className={`flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all shadow-md ${
+              loading || !profile ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-            <span className="text-sm font-medium">{loading ? 'Loading...' : 'Refresh'}</span>
+            <Plus size={18} />
+            <span className="text-sm font-medium">Add Funds</span>
           </button>
           
           <button 
-            onClick={handleExport}
+            onClick={onWithdraw}
             disabled={loading || !profile}
-            className={`flex items-center space-x-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors ${
+            className={`flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl hover:from-red-600 hover:to-orange-600 transition-all shadow-md ${
               loading || !profile ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            <Minus size={18} />
+            <span className="text-sm font-medium">Withdraw</span>
+          </button>
+          
+          <button 
+            onClick={onStatement}
+            disabled={loading || !profile}
+            className={`flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:from-purple-600 hover:to-indigo-600 transition-all shadow-md ${
+              loading || !profile ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            <span className="text-sm font-medium">Statement</span>
+          </button>
+          
+          <button 
+            onClick={onExport}
+            disabled={loading || !profile || exporting}
+            className={`flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all shadow-md ${
+              loading || !profile || exporting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
             <Download size={18} />
@@ -102,13 +104,13 @@ const InvestorHeader: React.FC<InvestorHeaderProps> = ({ profile, loading, error
           </button>
           
           <button 
-            disabled={loading || !profile}
-            className={`flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-orange-500 text-white rounded-xl hover:from-cyan-600 hover:to-orange-600 transition-all shadow-md ${
-              loading || !profile ? 'opacity-50 cursor-not-allowed' : ''
+            onClick={onRefresh}
+            disabled={loading}
+            className={`flex items-center space-x-2 p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            <Edit size={18} />
-            <span className="text-sm font-medium">Edit</span>
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>

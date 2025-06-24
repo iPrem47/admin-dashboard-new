@@ -29,14 +29,10 @@ const TallyExportForm: React.FC = () => {
   const [exportError, setExportError] = useState<string | null>(null);
   const [showLargeDataWarning, setShowLargeDataWarning] = useState(false);
 
-  // Type options - you can customize these based on your needs
+  // Type options - only All and Payout as requested
   const typeOptions: TypeOption[] = [
     { value: 'All', label: 'All' },
-    { value: 'Profit', label: 'Profit' },
-    { value: 'Loss', label: 'Loss' },
-    { value: 'Investment', label: 'Investment' },
-    { value: 'Withdrawal', label: 'Withdrawal' },
-    { value: 'TDS', label: 'TDS' }
+    { value: 'Payout', label: 'Payout' }
   ];
 
   const validateForm = (): boolean => {
@@ -172,8 +168,8 @@ const TallyExportForm: React.FC = () => {
             <FileSpreadsheet size={24} className="text-green-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Tally Export</h1>
-            <p className="text-gray-600 mt-1">Export your financial data to Excel format for Tally integration</p>
+            <h1 className="text-3xl font-bold text-gray-900">Payout TDS</h1>
+            <p className="text-gray-600 mt-1">Export your payout and TDS data to Excel format for Tally integration</p>
           </div>
         </div>
       </div>
@@ -206,16 +202,6 @@ const TallyExportForm: React.FC = () => {
 
       {/* Export Form */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-        <div className="flex items-center space-x-3 mb-8">
-          <div className="p-3 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl">
-            <Filter size={24} className="text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Export Configuration</h2>
-            <p className="text-gray-600">Configure your export parameters and download the Excel file</p>
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-end">
           {/* From Date */}
           <div>
@@ -273,7 +259,7 @@ const TallyExportForm: React.FC = () => {
               </button>
               
               {isTypeDropdownOpen && !isExporting && (
-                <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg">
                   {typeOptions.map((option) => (
                     <button
                       key={option.value}
@@ -338,36 +324,6 @@ const TallyExportForm: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Export Information */}
-        <div className="mt-8 bg-gray-50 rounded-2xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <Clock size={20} className="mr-2 text-gray-600" />
-            Export Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-            <div>
-              <h4 className="font-semibold text-gray-700 mb-2">What's Included:</h4>
-              <ul className="space-y-1 text-gray-600">
-                <li>• Transaction records for selected date range</li>
-                <li>• Investor details and amounts</li>
-                <li>• Profit/Loss calculations</li>
-                <li>• TDS information (if applicable)</li>
-                <li>• Account balances and movements</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-700 mb-2">File Format:</h4>
-              <ul className="space-y-1 text-gray-600">
-                <li>• Excel (.xlsx) format</li>
-                <li>• Tally-compatible structure</li>
-                <li>• Multiple worksheets for different data types</li>
-                <li>• Formatted for easy import</li>
-                <li>• Includes summary sheets</li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

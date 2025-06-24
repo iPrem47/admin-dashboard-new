@@ -19,7 +19,9 @@ import {
   Plus,
   List,
   Minus,
-  Building2
+  Building2,
+  Clock,
+  UserPlus
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -55,6 +57,7 @@ const Sidebar: React.FC = () => {
       submenuItems: [
         { name: 'View Investors', path: '/investors' },
         { name: 'Add Investor', path: '/investors/add' },
+        { name: 'Pending Investors', path: '/investors/pending', icon: Clock },
         { name: 'Reports', path: '/investors/reports' }
       ]
     },

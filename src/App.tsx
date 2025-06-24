@@ -8,6 +8,7 @@ import UsersTable from './components/UsersTable';
 import ProfitLoss from './components/ProfitLoss';
 import ViewInvestors from './components/Investors/ViewInvestors';
 import AddInvestor from './components/Investors/AddInvestor/AddInvestor';
+import PendingInvestors from './components/Investors/PendingInvestors/PendingInvestors';
 import Dashboard from './components/Dashboard/Dashboard';
 import Payouts from './components/Payouts/Payouts';
 import BulkTransactions from './components/BulkTransactions/BulkTransactions';
@@ -40,6 +41,7 @@ const DashboardLayout: React.FC = () => {
               {/* Investor Routes */}
               <Route path="/investors" element={<ViewInvestors />} />
               <Route path="/investors/add" element={<AddInvestor onBack={() => window.history.back()} />} />
+              <Route path="/investors/pending" element={<PendingInvestors />} />
               <Route path="/investors/reports" element={
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Investor Reports</h2>

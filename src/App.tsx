@@ -10,6 +10,7 @@ import ViewInvestors from './components/Investors/ViewInvestors';
 import AddInvestor from './components/Investors/AddInvestor/AddInvestor';
 import PendingInvestors from './components/Investors/PendingInvestors/PendingInvestors';
 import InvestorDetails from './components/Investors/InvestorDetails/InvestorDetails';
+import Referrals from './components/Investors/Referrals/Referrals';
 import Dashboard from './components/Dashboard/Dashboard';
 import Payouts from './components/Payouts/Payouts';
 import BulkTransactions from './components/BulkTransactions/BulkTransactions';
@@ -44,12 +45,7 @@ const DashboardLayout: React.FC = () => {
               <Route path="/investors/add" element={<AddInvestor onBack={() => window.history.back()} />} />
               <Route path="/investors/pending" element={<PendingInvestors />} />
               <Route path="/investors/:investorId" element={<InvestorDetails />} />
-              <Route path="/investors/reports" element={
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Investor Reports</h2>
-                  <p className="text-gray-600">This section is under development.</p>
-                </div>
-              } />
+              <Route path="/investors/referrals" element={<Referrals />} />
               
               {/* Transaction Routes */}
               <Route path="/profit-loss" element={<ProfitLoss />} />

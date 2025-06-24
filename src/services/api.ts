@@ -104,6 +104,18 @@ class ApiService {
     return response.data;
   }
 
+  // References endpoints
+  async getAllReferences() {
+    const response = await this.api.get('/references');
+    return response.data;
+  }
+
+  // Add Transaction endpoint
+  async addTransaction(payload: { tag: string; investorId: string; amount: number; date: string; note: string }) {
+    const response = await this.api.post('/transaction/addTransaction', payload);
+    return response.data;
+  }
+
   // Transaction endpoints
   async getAllTransactions(params: { page: number; limit: number; search: string; transactionTypeId?: number; transactionModeId?: number; status?: string }) {
     const queryParams = new URLSearchParams({
@@ -125,12 +137,6 @@ class ApiService {
     console.log('Fetching transactions with URL:', `/transaction/admin/all?${queryParams.toString()}`);
     
     const response = await this.api.get(`/transaction/admin/all?${queryParams.toString()}`);
-    return response.data;
-  }
-
-  // Add Transaction endpoint
-  async addTransaction(payload: { tag: string; investorId: string; amount: number; date: string; note: string }) {
-    const response = await this.api.post('/transaction/addTransaction', payload);
     return response.data;
   }
 

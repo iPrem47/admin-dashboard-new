@@ -17,6 +17,7 @@ import AddFunds from './components/AddFunds/AddFunds';
 import WithdrawFunds from './components/WithdrawFunds/WithdrawFunds';
 import AddTransaction from './components/AddTransaction/AddTransaction';
 import AllAccounts from './components/AllAccounts/AllAccounts';
+import TallyExport from './components/TallyExport/TallyExport';
 
 const DashboardLayout: React.FC = () => {
   return (
@@ -78,12 +79,7 @@ const DashboardLayout: React.FC = () => {
               } />
               
               {/* Tally Export Route */}
-              <Route path="/tally-export" element={
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Tally Export</h2>
-                  <p className="text-gray-600">This section is under development.</p>
-                </div>
-              } />
+              <Route path="/tally-export" element={<TallyExport />} />
               
               {/* Catch all route - redirect to dashboard */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

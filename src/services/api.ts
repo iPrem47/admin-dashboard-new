@@ -286,6 +286,12 @@ class ApiService {
     return response.data;
   }
 
+  // Tally Export endpoint
+  async exportTallyData(payload: { type: string; fromDate: string; toDate: string }) {
+    const response = await this.api.post('/export-data/admin/exportData', payload);
+    return response.data;
+  }
+
   // Transaction endpoints - Changed from GET to POST
   async getAllAmounts() {
     const response = await this.api.post('/amount/getAllAmount', {});

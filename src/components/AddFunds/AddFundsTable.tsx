@@ -101,7 +101,7 @@ const AddFundsTable: React.FC = () => {
     setSearchTerm('');
     setFilters({
       search: '',
-      transactionStatusId: null,
+      transactionStatusId: undefined,
       page: 1
     });
   };

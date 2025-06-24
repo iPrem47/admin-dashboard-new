@@ -169,10 +169,10 @@ class ApiService {
     return response.data;
   }
 
-  // Add Funds endpoints - Updated to use the new API endpoint
+  // Add Funds endpoints
   async getAddFundsRequests(params: { page: number; limit: number; search?: string; transactionStatusId?: number | null }) {
     const queryParams = new URLSearchParams({
-      transactionTypeId: '2', // Changed to 2 as per your API
+      transactionTypeId: '1', // Always 1 for Add Funds
       page: params.page.toString(),
       limit: params.limit.toString()
     });

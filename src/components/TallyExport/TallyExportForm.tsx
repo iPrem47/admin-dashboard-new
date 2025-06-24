@@ -9,7 +9,8 @@ import {
   FileSpreadsheet,
   Filter,
   Clock,
-  Info
+  Info,
+  AlertTriangle
 } from 'lucide-react';
 import { TallyExportFormData, TallyExportPayload, TallyExportResponse, TypeOption } from './types';
 import { convertExcel } from './utils/convertExcel';
@@ -308,22 +309,44 @@ const TallyExportForm: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Large Data Warning */}
-        {showLargeDataWarning && (
-          <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
-            <div className="flex items-start space-x-3">
-              <Info size={24} className="text-yellow-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="text-yellow-800 font-semibold mb-2">Large amount of data included</h3>
-                <p className="text-yellow-700">
-                  You're about to queue a large amount of data that may take a while to export and appear in your email. 
-                  Consider picking a different date range.
-                </p>
-              </div>
+      {/* Large Data Warning - Always Show */}
+      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl p-6 shadow-sm">
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
+              <AlertTriangle size={20} className="text-white" />
             </div>
           </div>
-        )}
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-yellow-900 mb-2">Large amount of data included</h3>
+            <p className="text-yellow-800 leading-relaxed">
+              You're about to queue a large amount of data that may take a while to export and appear in your email. 
+              Consider picking a different date range.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Additional Information Card */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
+              <Info size={20} className="text-blue-600" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Export Information</h3>
+            <div className="space-y-2 text-sm text-gray-600">
+              <p>• The exported Excel file will be compatible with Tally ERP for seamless data import</p>
+              <p>• Large date ranges may take several minutes to process and will be sent to your registered email</p>
+              <p>• For optimal performance, we recommend exporting data in monthly intervals</p>
+              <p>• All financial data is encrypted and securely processed during export</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

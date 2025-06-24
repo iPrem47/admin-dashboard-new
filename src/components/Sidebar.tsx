@@ -18,7 +18,8 @@ import {
   ArrowUpDown,
   Plus,
   List,
-  Minus
+  Minus,
+  Building2
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -83,6 +84,7 @@ const Sidebar: React.FC = () => {
       isOpen: isAccountOpen,
       setIsOpen: setIsAccountOpen,
       submenuItems: [
+        { name: 'All Accounts', path: '/all-accounts', icon: Building2 },
         { name: 'Account Settings', path: '/account-settings' },
         { name: 'Profile', path: '/profile' },
         { name: 'Security', path: '/security' }

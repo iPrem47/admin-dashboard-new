@@ -219,6 +219,19 @@ class ApiService {
     return response.data;
   }
 
+  // All Accounts endpoints
+  async getAllAccounts(params: { page: number; limit: number }) {
+    const queryParams = new URLSearchParams({
+      page: params.page.toString(),
+      limit: params.limit.toString()
+    });
+
+    console.log('Fetching accounts with URL:', `/transaction-accounts/getAllAccount?${queryParams.toString()}`);
+    
+    const response = await this.api.get(`/transaction-accounts/getAllAccount?${queryParams.toString()}`);
+    return response.data;
+  }
+
   // Payment System endpoints
   async getAllPaymentSystems() {
     const response = await this.api.get('/investor/getAllPaymentSystem');

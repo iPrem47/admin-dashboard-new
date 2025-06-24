@@ -16,6 +16,7 @@ import PendingTransactions from './components/PendingTransactions/PendingTransac
 import AddFunds from './components/AddFunds/AddFunds';
 import WithdrawFunds from './components/WithdrawFunds/WithdrawFunds';
 import AddTransaction from './components/AddTransaction/AddTransaction';
+import AllAccounts from './components/AllAccounts/AllAccounts';
 
 const DashboardLayout: React.FC = () => {
   return (
@@ -56,6 +57,7 @@ const DashboardLayout: React.FC = () => {
               <Route path="/withdraw-funds" element={<WithdrawFunds />} />
               
               {/* Account Routes */}
+              <Route path="/all-accounts" element={<AllAccounts />} />
               <Route path="/account-settings" element={
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Account Settings</h2>

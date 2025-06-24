@@ -14,6 +14,7 @@ import Referrals from './components/Investors/Referrals/Referrals';
 import Dashboard from './components/Dashboard/Dashboard';
 import Payouts from './components/Payouts/Payouts';
 import BulkTransactions from './components/BulkTransactions/BulkTransactions';
+import BulkTransactionDetails from './components/BulkTransactions/BulkTransactionDetails/BulkTransactionDetails';
 import Transactions from './components/Transactions/Transactions';
 import PendingTransactions from './components/PendingTransactions/PendingTransactions';
 import AddFunds from './components/AddFunds/AddFunds';
@@ -51,6 +52,7 @@ const DashboardLayout: React.FC = () => {
               <Route path="/profit-loss" element={<ProfitLoss />} />
               <Route path="/payouts" element={<Payouts />} />
               <Route path="/bulk-transactions" element={<BulkTransactions />} />
+              <Route path="/bulk-transactions/:bulkTransactionId" element={<BulkTransactionDetails />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/pending-transactions" element={<PendingTransactions />} />
               <Route path="/add-transaction" element={<AddTransaction />} />

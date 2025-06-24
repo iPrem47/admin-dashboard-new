@@ -85,6 +85,24 @@ class ApiService {
     return response.data;
   }
 
+  // Delete investor endpoint
+  async deleteInvestor(investorId: string) {
+    const response = await this.api.delete(`/investor/admin/delete/${investorId}`);
+    return response.data;
+  }
+
+  // References endpoints
+  async getAllReferences() {
+    const response = await this.api.get('/references');
+    return response.data;
+  }
+
+  // Add Transaction endpoint
+  async addTransaction(payload: { tag: string; investorId: string; amount: number; date: string; note: string }) {
+    const response = await this.api.post('/transaction/addTransaction', payload);
+    return response.data;
+  }
+
   // Investor endpoints
   async getAllInvestors(params: { page: number; limit: number; search: string; investorStatusId?: number; paymentSystem?: string }) {
     const queryParams = new URLSearchParams({
@@ -101,24 +119,6 @@ class ApiService {
     console.log('Fetching investors with URL:', `/investor/admin/all?${queryParams.toString()}`);
     
     const response = await this.api.get(`/investor/admin/all?${queryParams.toString()}`);
-    return response.data;
-  }
-
-  // Delete investor endpoint
-  async deleteInvestor(investorId: string) {
-    const response = await this.api.delete(`/investor/admin/delete/${investorId}`);
-    return response.data;
-  }
-
-  // References endpoints
-  async getAllReferences() {
-    const response = await this.api.get('/references');
-    return response.data;
-  }
-
-  // Add Transaction endpoint
-  async addTransaction(payload: { tag: string; investorId: string; amount: number; date: string; note: string }) {
-    const response = await this.api.post('/transaction/addTransaction', payload);
     return response.data;
   }
 
@@ -289,6 +289,17 @@ class ApiService {
     }
 
     const response = await this.api.get(`/bulk-transactions?${queryParams.toString()}`);
+    return response.data;
+  }
+
+  // Bulk Transaction Details endpoints
+  async getBulkTransactionSummary(bulkTransactionId: string) {
+    const response = await this.api.get(`/bulk-transactions/${bulkTransactionId}`);
+    return response.data;
+  }
+
+  async getBulkTransactionDetails(bulkTransactionId: string) {
+    const response = await this.api.get(`/bulk-transactions/${bulkTransactionId}/details`);
     return response.data;
   }
 

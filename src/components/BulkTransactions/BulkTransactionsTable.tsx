@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Loader2, 
   AlertCircle, 
@@ -21,6 +22,7 @@ import { BulkTransaction } from './types';
 import BulkTransactionsPagination from './BulkTransactionsPagination';
 
 const BulkTransactionsTable: React.FC = () => {
+  const navigate = useNavigate();
   const { transactions, loading, error, pagination, filters, setFilters, refetch } = useBulkTransactions();
   const { transactionModes, loading: loadingModes } = useTransactionModes();
   const { paymentSystems, loading: loadingSystems } = usePaymentSystems();
@@ -128,6 +130,10 @@ const BulkTransactionsTable: React.FC = () => {
       status: undefined,
       page: 1
     });
+  };
+
+  const handleViewTransaction = (transaction: BulkTransaction) => {
+    navigate(`/bulk-transactions/${transaction.bulkTransactionId}`);
   };
 
   const formatDate = (dateString: string): string => {
@@ -495,7 +501,11 @@ const BulkTransactionsTable: React.FC = () => {
                     
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
-                        <button className="p-2 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors">
+                        <button 
+                          onClick={() => handleViewTransaction(transaction)}
+                          className="p-2 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
+                          title="View Details"
+                        >
                           <Eye size={16} />
                         </button>
                         <button className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors">

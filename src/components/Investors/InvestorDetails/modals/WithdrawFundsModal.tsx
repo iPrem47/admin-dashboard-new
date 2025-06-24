@@ -211,9 +211,15 @@ const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({ isOpen, onClose
   const tdsAmount = formData.withdrawType === 'Profit' ? (formData.amount * tdsPercentage / 100) : 0;
   const totalAmount = formData.amount - tdsAmount;
 
+  // Check if amount exceeds available amount
+  const maxAmount = formData.withdrawType === 'Capital' 
+    ? withdrawalAmounts.capitalAmount 
+    : withdrawalAmounts.pnlAmount;
+  const isAmountExceeded = formData.amount > maxAmount;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">Withdraw</h2>
@@ -283,11 +289,16 @@ const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({ isOpen, onClose
                   onChange={(e) => handleAmountChange(Number(e.target.value))}
                   placeholder="Enter amount"
                   className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all bg-white ${
-                    errors.amount ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                    errors.amount || isAmountExceeded ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                 />
                 {errors.amount && (
                   <p className="mt-2 text-sm text-red-600">{errors.amount}</p>
+                )}
+                {isAmountExceeded && !errors.amount && (
+                  <p className="mt-2 text-sm text-red-600">
+                    Amount cannot exceed {formatAmount(withdrawalAmounts.pnlAmount)}
+                  </p>
                 )}
               </div>
             )}
@@ -309,12 +320,17 @@ const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({ isOpen, onClose
                       value={formData.amount || ''}
                       onChange={(e) => handleAmountChange(Number(e.target.value))}
                       className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all bg-white text-center text-xl font-bold ${
-                        errors.amount ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                        errors.amount || isAmountExceeded ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                     />
                   </div>
                   {errors.amount && (
                     <p className="mt-2 text-sm text-red-600">{errors.amount}</p>
+                  )}
+                  {isAmountExceeded && !errors.amount && (
+                    <p className="mt-2 text-sm text-red-600">
+                      Amount cannot exceed {formatAmount(withdrawalAmounts.capitalAmount)}
+                    </p>
                   )}
                 </div>
                 <button
@@ -458,9 +474,9 @@ const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({ isOpen, onClose
           <div className="pt-4">
             <button
               type="submit"
-              disabled={isSubmitting || isLoading || formData.amount <= 0}
+              disabled={isSubmitting || isLoading || formData.amount <= 0 || isAmountExceeded}
               className={`w-full py-3 px-4 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all shadow-lg ${
-                isSubmitting || isLoading || formData.amount <= 0
+                isSubmitting || isLoading || formData.amount <= 0 || isAmountExceeded
                   ? 'bg-gray-400 cursor-not-allowed' 
                   : 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:from-red-600 hover:to-orange-600'
               }`}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useBulkTransactionDetails } from './hooks/useBulkTransactionDetails';
 import BulkTransactionHeader from './BulkTransactionHeader';
 import BulkTransactionSummaryCard from './BulkTransactionSummaryCard';
@@ -40,65 +40,90 @@ const BulkTransactionDetails: React.FC = () => {
     totalResults: 0
   });
 
-  // Fetch completed and pending transactions separately
-  useEffect(() => {
+  // Fetch completed transactions
+  const fetchCompletedTransactions = async (page = 1, limit = 20) => {
     if (!bulkTransactionId) return;
     
-    const fetchCompletedTransactions = async () => {
-      try {
-        setLoadingCompleted(true);
-        setCompletedError(null);
-        
-        const response = await apiService.get(`/transaction/admin/all?bulkTransactionId=${bulkTransactionId}&transactionStatusId=1&page=1&limit=20`);
-        
-        if (response.success && response.data) {
-          setCompletedTransactions(response.data.results);
-          setCompletedPagination({
-            page: response.data.page,
-            limit: response.data.limit,
-            totalPages: response.data.totalPages,
-            totalResults: response.data.totalResults
-          });
-        } else {
-          throw new Error(response.message || 'Failed to fetch completed transactions');
-        }
-      } catch (err: any) {
-        console.error('Error fetching completed transactions:', err);
-        setCompletedError(err.message || 'Failed to load completed transactions');
-      } finally {
-        setLoadingCompleted(false);
+    try {
+      setLoadingCompleted(true);
+      setCompletedError(null);
+      
+      const response = await apiService.get(`/transaction/admin/all?bulkTransactionId=${bulkTransactionId}&transactionStatusId=1&page=${page}&limit=${limit}`);
+      
+      if (response.success && response.data) {
+        setCompletedTransactions(response.data.results);
+        setCompletedPagination({
+          page: response.data.page,
+          limit: response.data.limit,
+          totalPages: response.data.totalPages,
+          totalResults: response.data.totalResults
+        });
+      } else {
+        throw new Error(response.message || 'Failed to fetch completed transactions');
       }
-    };
+    } catch (err: any) {
+      console.error('Error fetching completed transactions:', err);
+      setCompletedError(err.message || 'Failed to load completed transactions');
+    } finally {
+      setLoadingCompleted(false);
+    }
+  };
+  
+  // Fetch pending transactions
+  const fetchPendingTransactions = async (page = 1, limit = 20) => {
+    if (!bulkTransactionId) return;
     
-    const fetchPendingTransactions = async () => {
-      try {
-        setLoadingPending(true);
-        setPendingError(null);
-        
-        const response = await apiService.get(`/transaction/admin/all?bulkTransactionId=${bulkTransactionId}&transactionStatusId=0&page=1&limit=20`);
-        
-        if (response.success && response.data) {
-          setPendingTransactions(response.data.results);
-          setPendingPagination({
-            page: response.data.page,
-            limit: response.data.limit,
-            totalPages: response.data.totalPages,
-            totalResults: response.data.totalResults
-          });
-        } else {
-          throw new Error(response.message || 'Failed to fetch pending transactions');
-        }
-      } catch (err: any) {
-        console.error('Error fetching pending transactions:', err);
-        setPendingError(err.message || 'Failed to load pending transactions');
-      } finally {
-        setLoadingPending(false);
+    try {
+      setLoadingPending(true);
+      setPendingError(null);
+      
+      const response = await apiService.get(`/transaction/admin/all?bulkTransactionId=${bulkTransactionId}&transactionStatusId=0&page=${page}&limit=${limit}`);
+      
+      if (response.success && response.data) {
+        setPendingTransactions(response.data.results);
+        setPendingPagination({
+          page: response.data.page,
+          limit: response.data.limit,
+          totalPages: response.data.totalPages,
+          totalResults: response.data.totalResults
+        });
+      } else {
+        throw new Error(response.message || 'Failed to fetch pending transactions');
       }
-    };
-    
+    } catch (err: any) {
+      console.error('Error fetching pending transactions:', err);
+      setPendingError(err.message || 'Failed to load pending transactions');
+    } finally {
+      setLoadingPending(false);
+    }
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+    if (!bulkTransactionId) return;
     fetchCompletedTransactions();
     fetchPendingTransactions();
   }, [bulkTransactionId]);
+
+  // Handle page change for completed transactions
+  const handleCompletedPageChange = (page: number) => {
+    fetchCompletedTransactions(page, completedPagination.limit);
+  };
+
+  // Handle limit change for completed transactions
+  const handleCompletedLimitChange = (limit: number) => {
+    fetchCompletedTransactions(1, limit);
+  };
+
+  // Handle page change for pending transactions
+  const handlePendingPageChange = (page: number) => {
+    fetchPendingTransactions(page, pendingPagination.limit);
+  };
+
+  // Handle limit change for pending transactions
+  const handlePendingLimitChange = (limit: number) => {
+    fetchPendingTransactions(1, limit);
+  };
 
   // Calculate total amount
   const totalAmount = transactions.reduce((sum, transaction) => {
@@ -112,6 +137,8 @@ const BulkTransactionDetails: React.FC = () => {
   // Handle refresh
   const handleRefresh = () => {
     refetch();
+    fetchCompletedTransactions(completedPagination.page, completedPagination.limit);
+    fetchPendingTransactions(pendingPagination.page, pendingPagination.limit);
   };
 
   // Handle export
@@ -142,6 +169,54 @@ const BulkTransactionDetails: React.FC = () => {
     a.download = `bulk-transaction-${bulkTransactionId}-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
+  };
+
+  // Get visible pages for pagination
+  const getVisiblePages = (currentPage: number, totalPages: number) => {
+    const pages = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
+  // Format amount
+  const formatAmount = (amount: number): string => {
+    if (amount >= 10000000) {
+      return `₹${(amount / 10000000).toFixed(1)}Cr`;
+    } else if (amount >= 100000) {
+      return `₹${(amount / 100000).toFixed(1)}L`;
+    } else if (amount >= 1000) {
+      return `₹${(amount / 1000).toFixed(1)}K`;
+    }
+    return `₹${amount.toLocaleString()}`;
   };
 
   // If no bulkTransactionId is provided, show error
@@ -422,21 +497,74 @@ const BulkTransactionDetails: React.FC = () => {
             
             {/* Pagination for Completed Transactions */}
             {!loadingCompleted && completedTransactions.length > 0 && (
-              <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  Showing <span className="font-semibold">{completedTransactions.length}</span> of <span className="font-semibold">{completedPagination.totalResults}</span> transactions
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-white transition-colors text-gray-600 hover:text-gray-900">
-                    Previous
-                  </button>
-                  <span className="text-sm text-gray-600">
-                    Page <span className="font-semibold">{completedPagination.page}</span> of <span className="font-semibold">{completedPagination.totalPages}</span>
-                  </span>
-                  <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-white transition-colors text-gray-600 hover:text-gray-900">
-                    Next
-                  </button>
+              <div className="bg-gray-50 px-8 py-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <p className="text-sm text-gray-600">
+                      Showing <span className="font-semibold text-gray-900">{((completedPagination.page - 1) * completedPagination.limit) + 1}-{Math.min(completedPagination.page * completedPagination.limit, completedPagination.totalResults)}</span> of{' '}
+                      <span className="font-semibold text-gray-900">{completedPagination.totalResults}</span> transactions
+                    </p>
+                    
+                    {/* Items per page selector */}
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-gray-600">Show:</span>
+                      <select
+                        value={completedPagination.limit}
+                        onChange={(e) => handleCompletedLimitChange(Number(e.target.value))}
+                        disabled={loadingCompleted}
+                        className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white"
+                      >
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  {/* Pagination Controls */}
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleCompletedPageChange(completedPagination.page - 1)}
+                      disabled={completedPagination.page <= 1 || loadingCompleted}
+                      className="flex items-center space-x-1 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 hover:text-gray-900"
+                    >
+                      <ChevronLeft size={16} />
+                      <span>Previous</span>
+                    </button>
+                    
+                    {/* Page Numbers */}
+                    <div className="flex items-center space-x-1">
+                      {getVisiblePages(completedPagination.page, completedPagination.totalPages).map((page, index) => (
+                        <React.Fragment key={index}>
+                          {page === '...' ? (
+                            <span className="px-3 py-2 text-sm text-gray-400">...</span>
+                          ) : (
+                            <button
+                              onClick={() => handleCompletedPageChange(page as number)}
+                              disabled={loadingCompleted}
+                              className={`px-3 py-2 text-sm rounded-lg transition-all ${
+                                completedPagination.page === page
+                                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                                  : 'border border-gray-300 hover:bg-white text-gray-600 hover:text-gray-900'
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
+                            >
+                              {page}
+                            </button>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    
+                    <button
+                      onClick={() => handleCompletedPageChange(completedPagination.page + 1)}
+                      disabled={completedPagination.page >= completedPagination.totalPages || loadingCompleted}
+                      className="flex items-center space-x-1 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 hover:text-gray-900"
+                    >
+                      <span>Next</span>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -560,21 +688,74 @@ const BulkTransactionDetails: React.FC = () => {
             
             {/* Pagination for Pending Transactions */}
             {!loadingPending && pendingTransactions.length > 0 && (
-              <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  Showing <span className="font-semibold">{pendingTransactions.length}</span> of <span className="font-semibold">{pendingPagination.totalResults}</span> transactions
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-white transition-colors text-gray-600 hover:text-gray-900">
-                    Previous
-                  </button>
-                  <span className="text-sm text-gray-600">
-                    Page <span className="font-semibold">{pendingPagination.page}</span> of <span className="font-semibold">{pendingPagination.totalPages}</span>
-                  </span>
-                  <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-white transition-colors text-gray-600 hover:text-gray-900">
-                    Next
-                  </button>
+              <div className="bg-gray-50 px-8 py-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <p className="text-sm text-gray-600">
+                      Showing <span className="font-semibold text-gray-900">{((pendingPagination.page - 1) * pendingPagination.limit) + 1}-{Math.min(pendingPagination.page * pendingPagination.limit, pendingPagination.totalResults)}</span> of{' '}
+                      <span className="font-semibold text-gray-900">{pendingPagination.totalResults}</span> transactions
+                    </p>
+                    
+                    {/* Items per page selector */}
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-gray-600">Show:</span>
+                      <select
+                        value={pendingPagination.limit}
+                        onChange={(e) => handlePendingLimitChange(Number(e.target.value))}
+                        disabled={loadingPending}
+                        className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                      >
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  {/* Pagination Controls */}
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handlePendingPageChange(pendingPagination.page - 1)}
+                      disabled={pendingPagination.page <= 1 || loadingPending}
+                      className="flex items-center space-x-1 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 hover:text-gray-900"
+                    >
+                      <ChevronLeft size={16} />
+                      <span>Previous</span>
+                    </button>
+                    
+                    {/* Page Numbers */}
+                    <div className="flex items-center space-x-1">
+                      {getVisiblePages(pendingPagination.page, pendingPagination.totalPages).map((page, index) => (
+                        <React.Fragment key={index}>
+                          {page === '...' ? (
+                            <span className="px-3 py-2 text-sm text-gray-400">...</span>
+                          ) : (
+                            <button
+                              onClick={() => handlePendingPageChange(page as number)}
+                              disabled={loadingPending}
+                              className={`px-3 py-2 text-sm rounded-lg transition-all ${
+                                pendingPagination.page === page
+                                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
+                                  : 'border border-gray-300 hover:bg-white text-gray-600 hover:text-gray-900'
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
+                            >
+                              {page}
+                            </button>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    
+                    <button
+                      onClick={() => handlePendingPageChange(pendingPagination.page + 1)}
+                      disabled={pendingPagination.page >= pendingPagination.totalPages || loadingPending}
+                      className="flex items-center space-x-1 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 hover:text-gray-900"
+                    >
+                      <span>Next</span>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

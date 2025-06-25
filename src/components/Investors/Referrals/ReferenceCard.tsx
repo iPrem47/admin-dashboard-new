@@ -1,14 +1,15 @@
 import React from 'react';
-import { Users, Calendar, Link2, Edit, Trash2, UserPlus } from 'lucide-react';
+import { Users, Calendar, Link2, Edit, Trash2, UserPlus, Eye } from 'lucide-react';
 import { Reference } from './types';
 
 interface ReferenceCardProps {
   reference: Reference;
   onEdit: (reference: Reference) => void;
   onDelete: (reference: Reference) => void;
+  onView: (reference: Reference) => void;
 }
 
-const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onDelete }) => {
+const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onDelete, onView }) => {
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       day: '2-digit',
@@ -65,6 +66,13 @@ const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onDele
           </div>
           
           <div className="flex items-center space-x-2">
+            <button 
+              onClick={() => onView(reference)}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title="View Reference Details"
+            >
+              <Eye size={18} />
+            </button>
             <button 
               onClick={() => onEdit(reference)}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"

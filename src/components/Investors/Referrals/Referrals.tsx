@@ -7,18 +7,21 @@ import {
   Download, 
   UserPlus, 
   Link2,
-  Users
+  Users,
+  Plus
 } from 'lucide-react';
 import { useReferences } from './hooks/useReferences';
 import { Reference } from './types';
 import ReferenceCard from './ReferenceCard';
 import AddReferenceModal from './AddReferenceModal';
+import ReferenceTable from './ReferenceTable';
 
 const Referrals: React.FC = () => {
   const { references, loading, error, filters, setFilters, refetch } = useReferences();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
 
   // Debounced search
   const handleSearchChange = useCallback((value: string) => {
@@ -82,6 +85,12 @@ const Referrals: React.FC = () => {
     }
   };
 
+  const handleViewReference = (reference: Reference) => {
+    console.log('Viewing reference details:', reference);
+    // TODO: Implement view details functionality
+    showNotification(`Viewing details for ${reference.name}`, 'info');
+  };
+
   const showNotification = (message: string, type: 'success' | 'error' | 'info') => {
     // Create a simple toast notification
     const toast = document.createElement('div');
@@ -130,6 +139,30 @@ const Referrals: React.FC = () => {
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10 pr-4 py-2.5 w-64 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
               />
+            </div>
+            
+            <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+              <button 
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+              </button>
+              <button 
+                onClick={() => setViewMode('table')}
+                className={`p-2 rounded-lg ${viewMode === 'table' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              </button>
             </div>
             
             <button 
@@ -264,18 +297,30 @@ const Referrals: React.FC = () => {
         </div>
       )}
 
-      {/* References Grid */}
+      {/* References Display */}
       {!loading && !error && references.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {references.map(reference => (
-            <ReferenceCard 
-              key={reference.id} 
-              reference={reference} 
+        <>
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {references.map(reference => (
+                <ReferenceCard 
+                  key={reference.id} 
+                  reference={reference} 
+                  onEdit={handleEditReference}
+                  onDelete={handleDeleteReference}
+                  onView={handleViewReference}
+                />
+              ))}
+            </div>
+          ) : (
+            <ReferenceTable 
+              references={references}
               onEdit={handleEditReference}
               onDelete={handleDeleteReference}
+              onView={handleViewReference}
             />
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* Add Reference Modal */}

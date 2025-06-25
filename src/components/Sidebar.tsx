@@ -22,12 +22,17 @@ import {
   Building2,
   Clock,
   UserPlus,
-  Link2
+  Link2,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+import ThemeToggle from './ThemeToggle';
 
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -126,12 +131,12 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className={`bg-white border-r border-gray-200 h-screen transition-all duration-300 ${
+    <div className={`bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen transition-all duration-300 ${
       isCollapsed ? 'w-20' : 'w-72'
     } flex flex-col shadow-lg`}>
       
       {/* Header with Logo and Toggle */}
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-6 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center space-x-3">
@@ -142,7 +147,7 @@ const Sidebar: React.FC = () => {
                   className="h-8 w-auto object-contain"
                 />
                 <div className="ml-3">
-                  <p className="text-xs text-gray-500 font-medium">Dashboard</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Dashboard</p>
                 </div>
               </div>
             </div>
@@ -158,7 +163,7 @@ const Sidebar: React.FC = () => {
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-600"
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
           >
             {isCollapsed ? <Menu size={20} /> : <X size={20} />}
           </button>
@@ -167,7 +172,7 @@ const Sidebar: React.FC = () => {
 
       {/* User Profile Section */}
       {!isCollapsed && user && (
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-6 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
               {user.avatar ? (
@@ -177,13 +182,13 @@ const Sidebar: React.FC = () => {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-gray-900 truncate">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                 {user.name}
               </h3>
-              <p className="text-xs text-gray-500 truncate">
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                 @{user.userName}
               </p>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-cyan-100 to-orange-100 text-cyan-700 mt-1">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-cyan-100 to-orange-100 dark:from-cyan-900 dark:to-orange-900 text-cyan-700 dark:text-cyan-300 mt-1">
                 {user.role}
               </span>
             </div>
@@ -211,8 +216,8 @@ const Sidebar: React.FC = () => {
               }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
                 isParentActive(item)
-                  ? 'bg-gradient-to-r from-cyan-50 to-orange-50 border border-cyan-200 shadow-sm'
-                  : 'hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-cyan-50 to-orange-50 dark:from-cyan-900/30 dark:to-orange-900/30 border border-cyan-200 dark:border-cyan-800 shadow-sm'
+                  : 'hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               <div className="flex items-center space-x-3">
@@ -220,15 +225,15 @@ const Sidebar: React.FC = () => {
                   size={20} 
                   className={`${
                     isParentActive(item)
-                      ? 'text-cyan-600' 
-                      : 'text-gray-500 group-hover:text-gray-700'
+                      ? 'text-cyan-600 dark:text-cyan-400' 
+                      : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
                   } transition-colors`} 
                 />
                 {!isCollapsed && (
                   <span className={`text-sm font-medium ${
                     isParentActive(item)
-                      ? 'text-gray-900' 
-                      : 'text-gray-700 group-hover:text-gray-900'
+                      ? 'text-gray-900 dark:text-white' 
+                      : 'text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white'
                   } transition-colors`}>
                     {item.name}
                   </span>
@@ -237,7 +242,7 @@ const Sidebar: React.FC = () => {
               {!isCollapsed && item.hasSubmenu && (
                 <ChevronRight 
                   size={16} 
-                  className={`text-gray-400 transition-transform duration-200 ${
+                  className={`text-gray-400 dark:text-gray-500 transition-transform duration-200 ${
                     item.isOpen ? 'rotate-90' : ''
                   }`} 
                 />
@@ -253,8 +258,8 @@ const Sidebar: React.FC = () => {
                     onClick={() => handleNavigation(subItem.path)}
                     className={`w-full text-left px-4 py-2 text-sm rounded-lg transition-colors flex items-center space-x-2 ${
                       isActiveItem(subItem.path)
-                        ? 'text-cyan-600 bg-cyan-50 font-medium'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 font-medium'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
                     {subItem.icon && <subItem.icon size={16} />}
@@ -267,17 +272,22 @@ const Sidebar: React.FC = () => {
         ))}
       </nav>
 
-      {/* Logout Button */}
-      <div className="p-4 border-t border-gray-100">
+      {/* Theme Toggle and Logout */}
+      <div className="p-4 border-t border-gray-100 dark:border-gray-700">
+        <div className="flex items-center justify-between mb-4">
+          {!isCollapsed && <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme</span>}
+          <ThemeToggle />
+        </div>
+        
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-red-50 hover:text-red-600 text-gray-600 group ${
+          className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 text-gray-600 dark:text-gray-400 group ${
             isCollapsed ? 'justify-center' : ''
           }`}
         >
-          <LogOut size={20} className="group-hover:text-red-600 transition-colors" />
+          <LogOut size={20} className="group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
           {!isCollapsed && (
-            <span className="text-sm font-medium group-hover:text-red-600 transition-colors">
+            <span className="text-sm font-medium group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
               Logout
             </span>
           )}

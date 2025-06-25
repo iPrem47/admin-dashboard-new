@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './components/auth/LoginPage';
 import Sidebar from './components/Sidebar';
@@ -26,7 +27,7 @@ import NotFound from './components/NotFound';
 
 const DashboardLayout: React.FC = () => {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <Sidebar />
       
@@ -49,9 +50,9 @@ const DashboardLayout: React.FC = () => {
               <Route path="/investors/referrals" element={<Referrals />} />
               <Route path="/reference-investors/:referenceId" element={<ReferenceInvestors />} />
               <Route path="/investors/reports" element={
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Investor Reports</h2>
-                  <p className="text-gray-600">This section is under development.</p>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Investor Reports</h2>
+                  <p className="text-gray-600 dark:text-gray-300">This section is under development.</p>
                 </div>
               } />
               
@@ -69,21 +70,21 @@ const DashboardLayout: React.FC = () => {
               {/* Account Routes */}
               <Route path="/all-accounts" element={<AllAccounts />} />
               <Route path="/account-settings" element={
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Account Settings</h2>
-                  <p className="text-gray-600">This section is under development.</p>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Account Settings</h2>
+                  <p className="text-gray-600 dark:text-gray-300">This section is under development.</p>
                 </div>
               } />
               <Route path="/profile" element={
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Profile</h2>
-                  <p className="text-gray-600">This section is under development.</p>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Profile</h2>
+                  <p className="text-gray-600 dark:text-gray-300">This section is under development.</p>
                 </div>
               } />
               <Route path="/security" element={
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Security</h2>
-                  <p className="text-gray-600">This section is under development.</p>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Security</h2>
+                  <p className="text-gray-600 dark:text-gray-300">This section is under development.</p>
                 </div>
               } />
               
@@ -102,21 +103,23 @@ const DashboardLayout: React.FC = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route 
-            path="/*" 
-            element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            } 
-          />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route 
+              path="/*" 
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

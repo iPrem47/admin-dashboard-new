@@ -96,6 +96,12 @@ class ApiService {
     const response = await this.api.get('/references');
     return response.data;
   }
+  
+  // Reference investors endpoint
+  async getReferenceInvestors(referenceId: string) {
+    const response = await this.api.get(`/references/${referenceId}/investors`);
+    return response.data;
+  }
 
   // Add Transaction endpoint
   async addTransaction(payload: { tag: string; investorId: string; amount: number; date: string; note: string }) {

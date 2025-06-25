@@ -1,6 +1,7 @@
 import React from 'react';
 import { Eye, Edit, Trash2, Users, Link2, Calendar } from 'lucide-react';
 import { Reference } from './types';
+import { useNavigate } from 'react-router-dom';
 
 interface ReferenceTableProps {
   references: Reference[];
@@ -10,6 +11,8 @@ interface ReferenceTableProps {
 }
 
 const ReferenceTable: React.FC<ReferenceTableProps> = ({ references, onEdit, onDelete, onView }) => {
+  const navigate = useNavigate();
+  
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       day: '2-digit',
@@ -38,6 +41,10 @@ const ReferenceTable: React.FC<ReferenceTableProps> = ({ references, onEdit, onD
     // Simple hash function to get a consistent index
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return colors[hash % colors.length];
+  };
+  
+  const handleViewInvestors = (referenceId: string) => {
+    navigate(`/reference-investors/${referenceId}`);
   };
 
   return (
@@ -133,6 +140,13 @@ const ReferenceTable: React.FC<ReferenceTableProps> = ({ references, onEdit, onD
                       title="Delete Reference"
                     >
                       <Trash2 size={16} />
+                    </button>
+                    <button 
+                      onClick={() => handleViewInvestors(reference.referenceId)}
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      title="View Investors"
+                    >
+                      <Users size={16} />
                     </button>
                   </div>
                 </td>

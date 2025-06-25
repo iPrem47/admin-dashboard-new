@@ -1,6 +1,7 @@
 import React from 'react';
 import { Users, Calendar, Link2, Edit, Trash2, UserPlus, Eye } from 'lucide-react';
 import { Reference } from './types';
+import { useNavigate } from 'react-router-dom';
 
 interface ReferenceCardProps {
   reference: Reference;
@@ -10,6 +11,8 @@ interface ReferenceCardProps {
 }
 
 const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onDelete, onView }) => {
+  const navigate = useNavigate();
+  
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       day: '2-digit',
@@ -41,6 +44,10 @@ const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onDele
   };
 
   const colorClass = getColorClass(reference.name);
+  
+  const handleViewInvestors = () => {
+    navigate(`/reference-investors/${reference.referenceId}`);
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow overflow-hidden">
@@ -116,9 +123,12 @@ const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onDele
       </div>
       
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-t border-gray-200">
-        <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all shadow-sm">
+        <button 
+          onClick={handleViewInvestors}
+          className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all shadow-sm"
+        >
           <UserPlus size={16} />
-          <span className="text-sm font-medium">Add Investor with this Reference</span>
+          <span className="text-sm font-medium">View Investors</span>
         </button>
       </div>
     </div>

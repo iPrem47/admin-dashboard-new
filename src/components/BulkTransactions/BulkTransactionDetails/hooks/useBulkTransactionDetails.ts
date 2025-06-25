@@ -55,18 +55,18 @@ export const useBulkTransactionDetails = (bulkTransactionId: string): UseBulkTra
       // Fetch bulk transaction details using dedicated API service method
       const response: BulkTransactionDetailsApiResponse = await apiService.getBulkTransactionDetails(bulkTransactionId);
       
-      if (response.success && response.data) {
-        setTransactions(response.data);
+      if (response.success && response.data && response.data.results) {
+        setTransactions(response.data.results);
         setPagination({
-          currentPage: 1,
-          totalPages: 1,
-          totalResults: response.data.length,
-          limit: response.data.length,
-          hasNext: false,
-          hasPrev: false
+          currentPage: response.data.page,
+          totalPages: response.data.totalPages,
+          totalResults: response.data.totalResults,
+          limit: response.data.limit,
+          hasNext: response.data.page < response.data.totalPages,
+          hasPrev: response.data.page > 1
         });
         
-        console.log('Successfully loaded bulk transaction details:', response.data.length);
+        console.log('Successfully loaded bulk transaction details:', response.data.results.length);
       } else {
         throw new Error(response.message || 'Failed to fetch bulk transaction details');
       }

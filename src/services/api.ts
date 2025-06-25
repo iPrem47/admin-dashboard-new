@@ -234,7 +234,7 @@ class ApiService {
   }
 
   async getBulkTransactionDetails(bulkTransactionId: string) {
-    const response = await this.api.get(`/bulk-transactions/${bulkTransactionId}/details`);
+    const response = await this.api.get(`/transaction/admin/all?bulkTransactionId=${bulkTransactionId}`);
     return response.data;
   }
 

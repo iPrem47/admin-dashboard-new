@@ -15,7 +15,13 @@ export interface BulkTransactionDetail {
 
 export interface BulkTransactionDetailsApiResponse {
   statusCode: number;
-  data: BulkTransactionDetail[];
+  data: {
+    results: BulkTransactionDetail[];
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalResults: number;
+  };
   message: string;
   success: boolean;
 }

@@ -22,6 +22,7 @@ import AddTransaction from './components/AddTransaction/AddTransaction';
 import WithdrawFunds from './components/WithdrawFunds/WithdrawFunds';
 import AllAccounts from './components/AllAccounts/AllAccounts';
 import TallyExport from './components/TallyExport/TallyExport';
+import NotFound from './components/NotFound';
 
 const DashboardLayout: React.FC = () => {
   return (
@@ -89,8 +90,8 @@ const DashboardLayout: React.FC = () => {
               {/* Tally Export Route */}
               <Route path="/tally-export" element={<TallyExport />} />
               
-              {/* Catch all route - redirect to dashboard */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              {/* Catch all route - redirect to 404 page */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         </div>

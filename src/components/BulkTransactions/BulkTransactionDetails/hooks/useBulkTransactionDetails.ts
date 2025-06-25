@@ -43,8 +43,8 @@ export const useBulkTransactionDetails = (bulkTransactionId: string): UseBulkTra
       setLoading(true);
       setError(null);
       
-      // Fetch bulk transaction summary
-      const summaryResponse: BulkTransactionSummaryApiResponse = await apiService.get(`/bulk-transactions/${bulkTransactionId}`);
+      // Fetch bulk transaction summary using dedicated API service method
+      const summaryResponse: BulkTransactionSummaryApiResponse = await apiService.getBulkTransactionSummary(bulkTransactionId);
       
       if (summaryResponse.success && summaryResponse.data) {
         setSummary(summaryResponse.data);
@@ -52,8 +52,8 @@ export const useBulkTransactionDetails = (bulkTransactionId: string): UseBulkTra
         throw new Error(summaryResponse.message || 'Failed to fetch bulk transaction summary');
       }
       
-      // Fetch bulk transaction details
-      const response: BulkTransactionDetailsApiResponse = await apiService.get(`/bulk-transactions/${bulkTransactionId}/details`);
+      // Fetch bulk transaction details using dedicated API service method
+      const response: BulkTransactionDetailsApiResponse = await apiService.getBulkTransactionDetails(bulkTransactionId);
       
       if (response.success && response.data) {
         setTransactions(response.data);

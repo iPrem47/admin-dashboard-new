@@ -197,12 +197,6 @@ class ApiService {
     return response.data;
   }
 
-  // Account endpoints
-  async getAllAccounts() {
-    const response = await this.api.get('/transaction-accounts/getAllAccount');
-    return response.data;
-  }
-
   // Bulk Transactions endpoints
   async getBulkTransactions(params: { page: number; limit: number; search?: string; transactionType?: string; paymentSystem?: string; status?: string }) {
     const queryParams = new URLSearchParams({
